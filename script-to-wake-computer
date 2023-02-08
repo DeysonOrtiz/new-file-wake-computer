@@ -26,5 +26,5 @@ while true; do
     done
   fi
   # Wait for a specified amount of time before checking for new files again
-  sleep 1800
+  sleep 3600
 done
