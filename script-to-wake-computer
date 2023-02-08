@@ -1,0 +1,30 @@
+#!/bin/bash
+
+while true; do
+  # Check if AC power is connected
+  power_source=$(pmset -g ps | grep -o "AC Power")
+
+  # Check if current time is between 6AM and 6PM Monday-Friday
+  current_day=$(date +%A)
+  current_time=$(date +%H)
+  if [ "$power_source" == "AC Power" ] && [ "$current_day" != "Saturday" ] && [ "$current_day" != "Sunday" ] && [ "$current_time" -ge 6 ] && [ "$current_time" -lt 18 ]; then
+    # Check for new files in the Lucid Link folder
+    for file in "$dest_path/Elements-Needed/Lucid Link folder/"*; do
+      # Wake up the computer
+      pmset -a standbydelay 10800
+      pmset -a autopoweroff 0
+      pmset -a powerbutton 0
+      pmset -a womp 0
+
+      # Run the script if a new file is found
+      if [ -f "$file" ]; then
+        bash "$dest_path/Elements-Needed/Script/script-to-launch-automation.sh"
+
+        # Put the computer back to sleep
+        pmset sleepnow
+      fi
+    done
+  fi
+  # Wait for a specified amount of time before checking for new files again
+  sleep 10
+done
